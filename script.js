@@ -24,6 +24,35 @@ const displayController = (() => {
     const board = document.querySelectorAll('.cell');
     const message = document.querySelector('.message');
     const resetBtn = document.querySelector('.reset');
+
+    board.forEach(cell => cell.addEventListener('click', playGame));
+
+    const updateBoard = () => {
+        for (let i = 0; i < board.length; i++) {
+            board[i].textContent = gameBoard.getBoard(i);
+        };
+    };
+
+    const setMessage = (msg) => {
+        message.textContent = msg;
+    };
+
+    const disableBoard = () => {
+        board.forEach(cell => cell.removeEventListener('click', playGame));
+    };
+
+    const enableBoard = () => {
+        board.forEach(cell => cell.addEventListener('click', playGame));
+    };
+
+    resetBtn.addEventListener('click', () => {
+        gameBoard.resetBoard();
+        updateBoard();
+        setMessage("Player X's Turn");
+        enableBoard();
+    });
+
+    return {updateBoard, setMessage, disableBoard, enableBoard};
 })();
 
 
@@ -55,7 +84,7 @@ const gameController = (() => {
     const playGame = (index) => {
         if (gameBoard.getBoard(index) === '') {
             gameBoard.changeBoard(currentPlayer.getSign(), index);
-            displayController.updateBoard(index, currentPlayer.getSign());
+            displayController.updateBoard();
 
             if (checkWinner(currentPlayer.getSign())) {
                 displayController.setMessage(`Player ${currentPlayer.getSign()} wins!`);
@@ -65,7 +94,7 @@ const gameController = (() => {
             } else {
                 changePlayer();
             }
-        }
+        } else return;
     };
 
     return {playGame};
