@@ -13,46 +13,13 @@ const gameBoard = (() => {
 
     const getBoard = (index) => board[index];
 
+    const getGameBoard = () => board;
+
     const resetBoard = () => {
         board = Array(9).fill('');
     };
 
-    return {changeBoard, getBoard, resetBoard};
-})();
-
-const displayController = (() => {
-    const board = document.querySelectorAll('.cell');
-    const message = document.querySelector('.message');
-    const resetBtn = document.querySelector('.reset');
-
-    board.forEach(cell => cell.addEventListener('click', playGame));
-
-    const updateBoard = () => {
-        for (let i = 0; i < board.length; i++) {
-            board[i].textContent = gameBoard.getBoard(i);
-        };
-    };
-
-    const setMessage = (msg) => {
-        message.textContent = msg;
-    };
-
-    const disableBoard = () => {
-        board.forEach(cell => cell.removeEventListener('click', playGame));
-    };
-
-    const enableBoard = () => {
-        board.forEach(cell => cell.addEventListener('click', playGame));
-    };
-
-    resetBtn.addEventListener('click', () => {
-        gameBoard.resetBoard();
-        updateBoard();
-        setMessage("Player X's Turn");
-        enableBoard();
-    });
-
-    return {updateBoard, setMessage, disableBoard, enableBoard};
+    return {changeBoard, getBoard, resetBoard, getGameBoard};
 })();
 
 
@@ -78,7 +45,7 @@ const gameController = (() => {
     };
 
     const checkDraw = () => {
-        return gameBoard.getBoard().every(cell => cell !== '');
+        return gameBoard.getGameBoard().every(cell => cell !== '');
     };
 
     const playGame = (index) => {
@@ -88,9 +55,10 @@ const gameController = (() => {
 
             if (checkWinner(currentPlayer.getSign())) {
                 displayController.setMessage(`Player ${currentPlayer.getSign()} wins!`);
-                displayController.disableBoard();
+                displayController.setGameOver(true);
             } else if (checkDraw()) {
                 displayController.setMessage('It\'s a draw!');
+                displayController.setGameOver(true);
             } else {
                 changePlayer();
             }
@@ -98,5 +66,42 @@ const gameController = (() => {
     };
 
     return {playGame};
+})();
+
+const displayController = (() => {
+    const board = document.querySelectorAll('.cell');
+    const message = document.querySelector('.message');
+    const resetBtn = document.querySelector('.reset');
+    let isGameOver = false;
+
+    board.forEach(cell => cell.addEventListener('click', (event) => {
+        if (getGameOver()) return;
+        gameController.playGame(event.target.id)
+    }));
+
+    const updateBoard = () => {
+        for (let i = 0; i < board.length; i++) {
+            board[i].textContent = gameBoard.getBoard(i);
+        };
+    };
+
+    const setMessage = (msg) => {
+        message.textContent = msg;
+    };
+
+    resetBtn.addEventListener('click', () => {
+        gameBoard.resetBoard();
+        updateBoard();
+        setMessage("Player X's Turn");
+        setGameOver(false);
+    });
+
+    const getGameOver = () => isGameOver;
+
+    const setGameOver = (bool) => {
+        isGameOver = bool;
+    };
+
+    return {updateBoard, setMessage, getGameOver, setGameOver};
 })();
 
