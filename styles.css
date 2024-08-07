@@ -4,12 +4,17 @@
     box-sizing: border-box;
 }
 
+body {
+    background-color: antiquewhite;
+}
+
 header {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #333;
-    color: white;
+    background-color: #e5c08f;
+    color: black;
+    font-size: 2em;
     padding: 50px;
 }
 
@@ -23,6 +28,7 @@ header {
 .game {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    background-color: white;
 }
 
 .cell {
@@ -30,8 +36,30 @@ header {
     justify-content: center;
     align-items: center;
     border: 1px solid #333;
-    height: 100px;
-    width: 100px;
-    font-size: 2em;
+    height: 150px;
+    width: 150px;
+    font-size: 4em;
+    font-weight: bold;
     cursor: pointer;
+}
+
+.message {
+    margin: 30px;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.reset {
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.reset:hover {
+    background-color: #555;
 }
